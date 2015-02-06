@@ -1,0 +1,21 @@
+{
+    "name": "GpsParser",
+    "type": "project",
+    "license": "BSD-4-Clause",
+    "description": "Library for handling GPS coordinates in different formats",
+    "keywords": ["gps", "coordinates"],
+    "support": {
+        "email": "grez.cz@gmail.com",
+        "source": "https://github.com/Grez/GpsParser",
+        "issues": "https://github.com/Grez/GpsParser/issues"
+    },
+    "authors": [
+        {
+            "name": "Tom Bartoň",
+            "email": "grez.cz@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "nette/tester": "~1.3"
+    }
+}

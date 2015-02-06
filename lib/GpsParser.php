@@ -187,7 +187,7 @@ class GpsParser
                 throw new InvalidGpsFormatException('GPS must be in range <-180,180>. Your input: "' . $this->_lat . ';' . $this->_lon . '"');
             }
 
-            $decimal = $matches['deg'];
+            $decimal = abs($matches['deg']);
 
             if (array_key_exists('min', $matches)) {
                 $decimal += $matches['min'] / 60;
@@ -197,7 +197,7 @@ class GpsParser
                 $decimal += $matches['sec'] / 3600;
             }
 
-            return $decimal;
+            return (($matches['deg'] < 0) ? '-' : '') . $decimal;
         }
 
         return false;

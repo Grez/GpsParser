@@ -18,12 +18,12 @@ echo $gps['lat']; // -12.123125
 echo $gps['lon']; // 27.123121
 
 $gps = $parser->parse('degrees');
-echo $gps['lat']; // -12° 7' 23.250"
-echo $gps['lon']; // 27° 7' 23.236"
+echo $gps['lat']; // S 12° 7' 23.250"
+echo $gps['lon']; // E 27° 7' 23.236"
 
 $gps = $parser->parse('noSeconds');
-echo $gps['lat']; // -12° 7.3875'
-echo $gps['lon']; // 27° 7.3873'
+echo $gps['lat']; // S 12° 7.3875'
+echo $gps['lon']; // E 27° 7.3873'
 ```
 
 ## Accepts different formats

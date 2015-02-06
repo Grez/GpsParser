@@ -72,14 +72,14 @@ class GpsParser
                 break;
             case 'degrees':
                 return array(
-                    'lat' => $this->decToDegrees($this->lat),
-                    'lon' => $this->decToDegrees($this->lon),
+                    'lat' => $this->decToDegrees($this->lat, 'lat'),
+                    'lon' => $this->decToDegrees($this->lon, 'lon'),
                 );
                 break;
             case 'noSeconds':
                 return array(
-                    'lat' => $this->decToDegreesNoSeconds($this->lat),
-                    'lon' => $this->decToDegreesNoSeconds($this->lon),
+                    'lat' => $this->decToDegreesNoSeconds($this->lat, 'lat'),
+                    'lon' => $this->decToDegreesNoSeconds($this->lon, 'lon'),
                 );
                 break;
         }
@@ -276,30 +276,41 @@ class GpsParser
     }
 
     /**
-     * @param $int
+     * @param float $decimal
+     * @param enum lat|lon $type
      * @return string
      */
-    protected function decToDegrees($int)
+    protected function decToDegrees($decimal, $type)
     {
-        $negative = ($int < 0);
-        $int = abs($int);
-        $degrees = floor($int);
-        $minutes = floor(($int - $degrees) * 60);
-        $seconds = ((($int - $degrees) * 60) - $minutes) * 60;
-        return (($negative) ? '-' : '') . $degrees . '° ' . $minutes . '\' ' . number_format($seconds, 3, '.', ',') . '"';
+        if($decimal < 0) {
+            $hemisphere = ($type == 'lat') ? 'S' : 'W';
+        } else {
+            $hemisphere = ($type == 'lat') ? 'N' : 'E';
+        }
+        $abs = abs($decimal);
+        $degrees = floor($abs);
+        $minutes = floor(($abs - $degrees) * 60);
+        $seconds = ((($abs - $degrees) * 60) - $minutes) * 60;
+        return $hemisphere . ' ' . $degrees . '° ' . $minutes . '\' ' . number_format($seconds, 3, '.', ',') . '"';
     }
 
     /**
-     * @param $int
+     * @param float $decimal
+     * @param enum lat|lon $type
      * @return string
      */
-    protected function decToDegreesNoSeconds($int)
+    protected function decToDegreesNoSeconds($decimal, $type)
     {
-        $negative = ($int < 0);
-        $int = abs($int);
-        $degrees = floor($int);
-        $minutes = ($int - $degrees) * 60;
-        return (($negative) ? '-' : '') . $degrees . '° ' . number_format($minutes, 4, '.', ',') . '\'';
+        if($decimal < 0) {
+            $hemisphere = ($type == 'lat') ? 'S' : 'W';
+        } else {
+            $hemisphere = ($type == 'lat') ? 'N' : 'E';
+        }
+        $abs = abs($decimal);
+        $abs = abs($abs);
+        $degrees = floor($abs);
+        $minutes = ($abs - $degrees) * 60;
+        return $hemisphere . ' ' . $degrees . '° ' . number_format($minutes, 4, '.', ',') . '\'';
     }
 
 }

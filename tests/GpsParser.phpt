@@ -114,6 +114,45 @@ class GpsParserTest extends Tester\TestCase
             Assert::equal($expected[$key]['lon'], $output['lon']);
         }
     }
+
+    // Different formats
+    public function testFive()
+    {
+        $inputs = array(
+            array('5.21312', '-12.12312'),
+            array('S 26° 42\' 45"', 'E 25° 42\' 32"'),
+        );
+        $expected = array(
+            'decimal' => array(
+                array('5.213120', '-12.123120'),
+                array('-26.712500', '25.708889'),
+            ),
+            'degrees' => array(
+                array('N 5° 12\' 47.232"', 'W 12° 7\' 23.232"'),
+                array('S 26° 42\' 45.000"', 'E 25° 42\' 32.000"'),
+            ),
+            'noSeconds' => array(
+                array('N 5° 12.7872\'', 'W 12° 7.3872\''),
+                array('S 26° 42.7500\'', 'E 25° 42.5333\''),
+            ),
+        );
+        foreach($inputs as $key => $input) {
+            $parser = new GpsParser($input[0], $input[1]);
+            $output = $parser->parse();
+            Assert::equal($expected['decimal'][$key][0], $output['lat']);
+            Assert::equal($expected['decimal'][$key][1], $output['lon']);
+
+            $parser = new GpsParser($input[0], $input[1]);
+            $output = $parser->parse('degrees');
+            Assert::equal($expected['degrees'][$key][0], $output['lat']);
+            Assert::equal($expected['degrees'][$key][1], $output['lon']);
+
+            $parser = new GpsParser($input[0], $input[1]);
+            $output = $parser->parse('noSeconds');
+            Assert::equal($expected['noSeconds'][$key][0], $output['lat']);
+            Assert::equal($expected['noSeconds'][$key][1], $output['lon']);
+        }
+    }
 }
 
 $testCase = new GpsParserTest();

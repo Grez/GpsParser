@@ -76,7 +76,7 @@ class GpsParser
                     'lon' => $this->decToDegrees($this->lon),
                 );
                 break;
-            case 'noMinutes':
+            case 'noSeconds':
                 return array(
                     'lat' => $this->decToDegreesNoSeconds($this->lat),
                     'lon' => $this->decToDegreesNoSeconds($this->lon),
@@ -299,7 +299,7 @@ class GpsParser
         $int = abs($int);
         $degrees = floor($int);
         $minutes = ($int - $degrees) * 60;
-        return (($negative) ? '-' : '') . $degrees . '° ' . number_format($minutes, 5, '.', ',') . '\'';
+        return (($negative) ? '-' : '') . $degrees . '° ' . number_format($minutes, 4, '.', ',') . '\'';
     }
 
 }

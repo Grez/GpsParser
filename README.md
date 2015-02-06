@@ -29,11 +29,14 @@ echo $gps['lon']; // 27° 7.3873'
 ## Accepts different formats
 * 12.543123, -12.54
 * N 53.123, E 65.123
+* 27° 7' 23", 27° 7' 23"
+* W 27° 7' 23.236", E 27° 7' 23.236"
 * 26 42 12, 53 23 12
 * N 12 43 12, W 12 43 12
-* 27° 7' 23.236", 27° 7' 23.236"
-* W 27° 7' 23.236", E 27° 7' 23.236"
 * For decimal point uses both "." and ","
+* Minutes can be written with [', `, ´]
+* Seconds can be written as [", ``, ´´]
+* Units can be omitted
 
 ## In default checks whether you didn't swap longitude and latitude
 ```php

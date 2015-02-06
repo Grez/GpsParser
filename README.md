@@ -46,9 +46,10 @@ Can be disabled with `setCheckOrder(false)`
 
 
 ## Can accept cardinal directions in other languages
-* J 26.12312, V 12.12312
 ```php
 // for Czech/Slovak
+$lat = 'J 26.12312';
+$lon = 'V 12.12312';
 $parser = new GpsParser($lat, $lon);
 $parser->addCardinalDirections($north = 'S', $south = 'J', $east = 'V', $west = 'Z');
 $gps = $parser->parse;

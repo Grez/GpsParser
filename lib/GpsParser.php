@@ -1,10 +1,27 @@
 <?php
 
+namespace Teddy\Gps;
+
+
 class GpsParser
 {
-    protected $lat = 0;
-    protected $lon = 0;
+
+    /** @var string */
+    protected $lat = '';
+
+    /** @var string */
+    protected $lon = '';
+
+    /** @var string (used for possible error msg) */
+    protected $_lat = '';
+
+    /** @var string (used for possible error msg) */
+    protected $_lon = '';
+
+    /** @var bool */
     protected $checkOrder = true;
+
+    /** @var array */
     protected $cardinalDirections = array(
         array(
             'north' => 'N',
@@ -19,7 +36,6 @@ class GpsParser
         $this->lat = $latitude;
         $this->lon = $longitude;
 
-        // Debug purposes
         $this->_lat = $latitude;
         $this->_lon = $longitude;
     }
@@ -49,42 +65,6 @@ class GpsParser
     public function setCheckOrder($checkOrder)
     {
         $this->checkOrder = (bool) $checkOrder;
-    }
-
-    /**
-     * @param string decimal|degrees|noSeconds $format
-     * @return array
-     * @throws InvalidGpsFormatException
-     * @throws InvalidArgumentException
-     */
-    public function parse($format = 'decimal')
-    {
-        if(!$this->canonize()) {
-            throw new InvalidGpsFormatException('Unable to parse GPS coordinates. Your input: "' . $this->_lat . ';' . $this->_lon . '"');
-        }
-
-        switch($format) {
-            case 'decimal':
-                return array(
-                    'lat' => number_format($this->lat, 6, '.', ','),
-                    'lon' => number_format($this->lon, 6, '.', ','),
-                );
-                break;
-            case 'degrees':
-                return array(
-                    'lat' => $this->decToDegrees($this->lat, 'lat'),
-                    'lon' => $this->decToDegrees($this->lon, 'lon'),
-                );
-                break;
-            case 'noSeconds':
-                return array(
-                    'lat' => $this->decToDegreesNoSeconds($this->lat, 'lat'),
-                    'lon' => $this->decToDegreesNoSeconds($this->lon, 'lon'),
-                );
-                break;
-        }
-
-        throw new InvalidArgumentException('This output format isn\'t supported. Typo?');
     }
 
     /**
@@ -276,41 +256,16 @@ class GpsParser
     }
 
     /**
-     * @param float $decimal
-     * @param enum lat|lon $type
-     * @return string
+     * @return Gps
+     * @throws InvalidGpsFormatException
      */
-    protected function decToDegrees($decimal, $type)
+    public function parse()
     {
-        if($decimal < 0) {
-            $hemisphere = ($type == 'lat') ? 'S' : 'W';
-        } else {
-            $hemisphere = ($type == 'lat') ? 'N' : 'E';
+        if (!$this->canonize()) {
+            throw new InvalidGpsFormatException('Unable to parse GPS coordinates. Your input: "' . $this->_lat . ';' . $this->_lon . '"');
         }
-        $abs = abs($decimal);
-        $degrees = floor($abs);
-        $minutes = floor(($abs - $degrees) * 60);
-        $seconds = ((($abs - $degrees) * 60) - $minutes) * 60;
-        return $hemisphere . ' ' . $degrees . '° ' . $minutes . '\' ' . number_format($seconds, 3, '.', ',') . '"';
-    }
 
-    /**
-     * @param float $decimal
-     * @param enum lat|lon $type
-     * @return string
-     */
-    protected function decToDegreesNoSeconds($decimal, $type)
-    {
-        if($decimal < 0) {
-            $hemisphere = ($type == 'lat') ? 'S' : 'W';
-        } else {
-            $hemisphere = ($type == 'lat') ? 'N' : 'E';
-        }
-        $abs = abs($decimal);
-        $abs = abs($abs);
-        $degrees = floor($abs);
-        $minutes = ($abs - $degrees) * 60;
-        return $hemisphere . ' ' . $degrees . '° ' . number_format($minutes, 4, '.', ',') . '\'';
+        return new Gps($this->lat, $this->lon);
     }
 
 }

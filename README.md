@@ -5,25 +5,25 @@ Library for handling GPS coordinates in different formats
 
 ```php
 <?php
+include 'lib/Gps.php';
 include 'lib/GpsParser.php';
 include 'lib/InvalidGpsFormatException.php';
 header('Content-Type: text/html; charset=utf-8');
 
+use Teddy\Gps\Gps;
+use Teddy\Gps\GpsParser;
+
 $latitude = -12.123125345;
 $longitude = 27.12312126;
 $parser = new gpsParser($latitude, $longitude);
-
-$gps = $parser->parse();
-echo $gps['lat']; // -12.123125
-echo $gps['lon']; // 27.123121
-
-$gps = $parser->parse('degrees');
-echo $gps['lat']; // S 12° 7' 23.250"
-echo $gps['lon']; // E 27° 7' 23.236"
-
-$gps = $parser->parse('noSeconds');
-echo $gps['lat']; // S 12° 7.3875'
-echo $gps['lon']; // E 27° 7.3873'
+try {
+    $gps = $parser->parse();
+    echo implode($gps->getDecimal(), ', '); // -12.123125, 27.123121
+    echo implode($gps->getDegrees(), ', '); // S 12° 7' 23.250", E 27° 7' 23.236"
+    echo implode($gps->getDegrees(false), ', '); // S 12° 7.3875', E 27° 7.3873'
+} catch (\Teddy\Gps\InvalidGpsFormatException $e) {
+    echo $e->getMessage();
+}
 ```
 
 ## Accepts different formats
@@ -42,8 +42,9 @@ echo $gps['lon']; // E 27° 7.3873'
 ```php
 $parser = new GpsParser('W 26.12312', 'N 12.12312');
 $gps = $parser->parse();
-echo $gps['lat']; // 12.123120
-echo $gps['lon']; // -26.123120
+$coords = $gps->getDecimal();
+echo $coords['lat']; // 12.123120
+echo $coords['lon']; // -26.123120
 ```
 Can be disabled with `setCheckOrder(false)`
 
@@ -56,6 +57,7 @@ $lon = 'V 12.12312';
 $parser = new GpsParser($lat, $lon);
 $parser->addCardinalDirections($north = 'S', $south = 'J', $east = 'V', $west = 'Z');
 $gps = $parser->parse;
-echo $gps['lat']; // -26.123120
-echo $gps['lon']; // 12.123120
+$coords = $gps->getDecimal();
+echo $coords['lat']; // -26.123120
+echo $coords['lon']; // 12.123120
 ```
